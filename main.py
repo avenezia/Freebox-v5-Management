@@ -37,9 +37,19 @@ def isSuccessfulLogin(iLoginResponseStr):
     loginAlertDiv = responseDom.find("div", attrs={"class": "loginalert"})
     return True if loginAlertDiv is None else False
 
+def isWifiModuleActive(iDom):
+    # The wifi module is controlled by <input name="wifi_disable_radio" type="hidden" value="0">
+    return getValueForElement("input", "wifi_disable_radio", iDom) == "0"
+
 def parseCommandLineArgs():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-e', help='enable the Wifi module')
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument("-e", help="Enable the WiFi module", action="store_true")
+    group.add_argument("-d", help="Disable the WiFi module",  action="store_true")
+    group.add_argument("-t", help="Switch the status of the WiFi module",  action="store_true")
+    parser.add_argument("-r", help="Reboot the WiFi module to apply the changes", action="store_true")
+    parser.add_argument("username", type=str, help="The username to login on Free site")
+    parser.parse_args()
 
 def main():
     parseCommandLineArgs()
@@ -57,6 +67,7 @@ def main():
         wifiPageResponse = browser.follow_link(text_regex=r"Param\xe9trer mon r\xe9seau WiFi")
         wifiDom = BeautifulSoup(wifiPageResponse.read())
         print parseInputsForPostRequest(wifiDom)
+        print isWifiModuleActive(wifiDom)
         
 
 
