@@ -13,7 +13,7 @@ def enum(**enums):
 
 WifiModuleAction = enum(ENABLE = 1, DISABLE = 2, SWITCH = 3)
 
-class FreeboxSettingsManager:
+class FreeboxWiFiManager:
     kDisabledValue = "1"
     kEnabledValue = "0"
     kLoginPage = "https://subscribe.free.fr/login/login.pl"
@@ -144,7 +144,7 @@ class FreeboxSettingsManager:
             self.kDisabledValue if wifiModuleStateValue == self.kEnabledValue else self.kEnabledValue
 
 def main():
-    manager = FreeboxSettingsManager()
+    manager = FreeboxWiFiManager()
     manager.execute()
 
 if __name__ == '__main__':
