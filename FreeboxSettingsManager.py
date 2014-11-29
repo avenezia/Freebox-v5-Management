@@ -14,6 +14,8 @@ def enum(**enums):
 WifiModuleAction = enum(ENABLE = 1, DISABLE = 2, SWITCH = 3)
 
 class FreeboxSettingsManager:
+    kDisabledValue = "1"
+    kEnabledValue = "0"
     kLoginPage = "https://subscribe.free.fr/login/login.pl"
     kPasswordControlName = "pass"
     kUsernameControlName = "login"
@@ -62,11 +64,11 @@ class FreeboxSettingsManager:
 
     def disableWiFiModule(self):
         print "Disabling WiFi module"
-        self.wifiModuleStateInputElement.value = "1"
+        self.wifiModuleStateInputElement.value = self.kDisabledValue
 
     def enableWiFiModule(self):
         print "Enabling WiFi module"
-        self.wifiModuleStateInputElement.value = "0"
+        self.wifiModuleStateInputElement.value = self.kEnabledValue
 
     def execute(self):
         self.parseCommandLineArgs()
@@ -94,8 +96,8 @@ class FreeboxSettingsManager:
         return True if loginAlertDiv is None else False
 
     def isWifiModuleActive(self):
-        # The wifi module is controlled by <input name="wifi_disable_radio" type="hidden" value="0">
-        return self.wifiModuleStateInputElement.value == "0"
+        # The wifi module is controlled by <input name="wifi_disable_radio" type="hidden" value=self.kEnabledValue>
+        return self.wifiModuleStateInputElement.value == self.kEnabledValue
 
     def parseAction(self, args):
         if args.e:
@@ -131,11 +133,12 @@ class FreeboxSettingsManager:
 
     def switchWiFiModule(self):
         wifiModuleStateValue = self.wifiModuleStateInputElement.value
-        assert wifiModuleStateValue == "0" or wifiModuleStateValue == "1"
+        assert wifiModuleStateValue == self.kEnabledValue or wifiModuleStateValue == self.kDisabledValue
         logMessage = "Switching from "
         logMessage += "enabled to disabled" if self.isWifiModuleActive() else "disabled to enabled"
         print logMessage
-        self.wifiModuleStateInputElement.value = "1" if wifiModuleStateValue == "0" else "0"
+        self.wifiModuleStateInputElement.value = \
+            self.kDisabledValue if wifiModuleStateValue == self.kEnabledValue else self.kEnabledValue
 
 def main():
     manager = FreeboxSettingsManager()
