@@ -56,6 +56,7 @@ class FreeboxSettingsManager:
         return changeIsNeeded
 
     def commitChange(self):
+        """It sends the form to perform the change of the WiFi status"""
         changeResponse = self.browser.submit()
         if changeResponse.code == 200:
             print "Modification performed correctly"
@@ -71,6 +72,7 @@ class FreeboxSettingsManager:
         self.wifiModuleStateInputElement.value = self.kEnabledValue
 
     def execute(self):
+        """It opens the page with the WiFi configuration and then performs the changes"""
         self.parseCommandLineArgs()
         if self.performLogin():
             wifiPageResponse = self.browser.follow_link(text_regex=r"Param\xe9trer mon r\xe9seau WiFi")
@@ -84,6 +86,7 @@ class FreeboxSettingsManager:
             print "Unable to login"
 
     def findWiFiController(self):
+        """It selects the form and the input element controlling the WiFi module"""
         self.browser.select_form(name = self.kWiFiSettingsFormName)
         self.wifiModuleStateInputElement = self.browser.form.find_control(self.kWifiModuleStateInputName)
         assert self.wifiModuleStateInputElement
